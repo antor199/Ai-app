@@ -1,43 +1,90 @@
+"use client";
+
+import { useState, useCallback, useEffect } from 'react';
 import Link from 'next/link';
-import { ArrowRight, BrainCircuit, Lightbulb, Zap } from 'lucide-react';
+import { ArrowRight, BrainCircuit, Lightbulb, Zap, UserPlus, LogIn, LogOut, Loader2, Sparkles } from 'lucide-react';
+import AuthFlow from './components/AuthFlow';
+import { insforge } from './lib/insforge';
 
 export default function Home() {
-  return (
-    <main className="relative min-h-screen overflow-hidden flex flex-col items-center justify-center">
-      {/* Video Background */}
-      <div className="absolute inset-0 z-0">
-        <video 
-          autoPlay 
-          loop 
-          muted 
-          playsInline
-          className="w-full h-full object-cover opacity-60 mix-blend-screen"
-        >
-          <source src="/videos/blackhole.mp4" type="video/mp4" />
-        </video>
-        {/* Fallback deep gradient overlay */}
-        <div className="absolute inset-0 bg-deep-gradient opacity-80 mix-blend-multiply" />
-        <div className="absolute inset-0 bg-black/40" />
-      </div>
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [user, setUser] = useState<{ name: string, email: string } | null>(null);
 
+  useEffect(() => {
+    const checkSession = async () => {
+      const { data } = await insforge.auth.getCurrentUser();
+      if (data?.user) {
+        setUser({
+          name: data.user.user_metadata?.name || "Replicant",
+          email: data.user.email || ""
+        });
+        setIsLoggedIn(true);
+      }
+    };
+    checkSession();
+  }, []);
+
+  const handleAuthorized = useCallback((authorizedUser: { name: string, email: string }) => {
+    setUser(authorizedUser);
+    setIsLoggedIn(true);
+    setShowAuth(false);
+    // In a real app, we'd redirect or change state here
+  }, []);
+
+  if (showAuth && !isLoggedIn) {
+    return <AuthFlow onAuthorized={handleAuthorized} />;
+  }
+
+  return (
+    <main className="relative min-h-screen flex flex-col items-center justify-center bg-cosmic">
       {/* Floating Header */}
-      <header className="absolute top-6 left-1/2 -translate-x-1/2 w-[90%] max-w-5xl z-50 glass-panel px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-2">
+      <header className="absolute top-4 left-1/2 -translate-x-1/2 w-[90%] max-w-6xl z-50 glass-panel px-6 py-4 flex items-center">
+        {/* Left: Logo */}
+        <div className="flex-1 flex items-center gap-2">
           <BrainCircuit className="text-primary-glow w-6 h-6" />
           <span className="font-orbitron font-bold text-xl tracking-wider text-white text-glow">
-            SINGULARITY
+            Ai app
           </span>
         </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-          <Link href="#features" className="text-white/70 hover:text-white transition-colors">Features</Link>
-          <Link href="#models" className="text-white/70 hover:text-white transition-colors">Models</Link>
+
+        {/* Center: Navigation */}
+        <nav className="hidden md:flex items-center gap-8 text-sm font-medium">
+          <Link href={isLoggedIn ? "/app" : "#"} onClick={() => !isLoggedIn && setShowAuth(true)} className="text-white/70 font-orbitron hover:text-white transition-colors">DASHBOARD</Link>
+          <Link href={isLoggedIn ? "/absorb" : "#"} onClick={() => !isLoggedIn && setShowAuth(true)} className="text-white/70 font-orbitron hover:text-white transition-colors">ABSORB</Link>
+          <Link href="#models" className="text-white/70 font-orbitron hover:text-white transition-colors">MODELS</Link>
         </nav>
-        <Link 
-          href="/app" 
-          className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-2 rounded-full font-medium transition-all backdrop-blur-md hover:box-glow"
-        >
-          Enter Workspace
-        </Link>
+
+        {/* Right: Auth Buttons */}
+        <div className="flex-1 flex justify-end items-center gap-4">
+          {!isLoggedIn ? (
+            <button
+              onClick={() => setShowAuth(true)}
+              className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-5 py-2 rounded-full font-medium transition-all backdrop-blur-md hover:box-glow flex items-center gap-2"
+            >
+              <UserPlus className="w-4 h-4" />
+              <span>Sign Up</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-4">
+              <div className="hidden md:flex flex-col items-end">
+                <span className="text-xs font-orbitron font-bold text-white tracking-widest uppercase">{user?.name}</span>
+                <span className="text-[9px] font-orbitron text-primary-glow tracking-[0.2em]">ACTIVE</span>
+              </div>
+              <button
+                onClick={async () => {
+                  await insforge.auth.signOut();
+                  setIsLoggedIn(false);
+                  setUser(null);
+                }}
+                className="bg-red-500/10 hover:bg-red-500/20 border border-red-500/20 text-red-400 px-5 py-2 rounded-full font-medium transition-all backdrop-blur-md flex items-center gap-2"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>Sign Out</span>
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Main Hero Content */}
@@ -49,31 +96,32 @@ export default function Home() {
           A cinematic, multi-model AI workspace designed for deep focus, knowledge absorption, and limitless creation.
         </p>
 
-        <Link 
-          href="/app"
+        <button
+          onClick={() => setShowAuth(true)}
+          style={{ transform: 'translate(-2%, -3%)' }}
           className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-gradient-to-r from-[#B6E5ED]/20 to-[#9ebaff]/20 border border-[#B6E5ED]/50 rounded-full text-white font-semibold text-lg overflow-hidden transition-all hover:scale-105 box-glow hover:box-glow-active focus:ring-2 focus:ring-[#B6E5ED]/50 focus:outline-none animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-300"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-[#B6E5ED] to-[#9ebaff] opacity-0 group-hover:opacity-20 transition-opacity" />
-          <span>Launch Singularity</span>
+          <span className='font-orbitron'>Launch Ai</span>
           <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-        </Link>
+        </button>
       </div>
 
       {/* Feature Grids */}
       <div id="features" className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 w-[90%] max-w-6xl mt-32 pb-20">
-        <FeatureCard 
+        <FeatureCard
           icon={<BrainCircuit className="w-8 h-8 text-primary-glow" />}
           title="Multi-Model Intel"
           description="Seamlessly switch between top-tier AI models including Gemini, Claude, and DeepSeek in real-time."
           delay="delay-500"
         />
-        <FeatureCard 
+        <FeatureCard
           icon={<Lightbulb className="w-8 h-8 text-[#9ebaff]" />}
           title="Knowledge Absorption"
           description="Drag and drop raw data, PDFs, and URLs. The system ingests and structures complex information instantly."
           delay="delay-700"
         />
-        <FeatureCard 
+        <FeatureCard
           icon={<Zap className="w-8 h-8 text-white" />}
           title="Lightning Speed"
           description="Powered by InsForge's ultra-low latency infrastructure and Vercel's global edge network."
