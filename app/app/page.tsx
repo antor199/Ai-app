@@ -54,7 +54,7 @@ function ChatDashboardContent({ conversationId }: { conversationId: string | nul
         if (!conversationId) setMessages([defaultGreeting]);
         return;
       }
-      
+
       // 1. Fetch messages using conversation_id
       // Clean column names to avoid "wrong columns query format"
       const { data, error } = await insforge.database
@@ -81,13 +81,13 @@ function ChatDashboardContent({ conversationId }: { conversationId: string | nul
           id: m.id,
           role: m.role || "assistant",
           content: m.content || "[EMPTY_SIGNAL]",
-          timestamp: m.created_at 
+          timestamp: m.created_at
             ? new Date(m.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             : new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         })) : [defaultGreeting]);
       }
     };
-    
+
     if (mounted) {
       loadConversation();
     }
@@ -126,7 +126,7 @@ function ChatDashboardContent({ conversationId }: { conversationId: string | nul
           .insert([{ user_id: user.id, title }])
           .select()
           .single();
-        
+
         if (convErr) throw convErr;
         activeConvId = conv.id;
         router.push(`/app?id=${activeConvId}`);
@@ -177,10 +177,23 @@ function ChatDashboardContent({ conversationId }: { conversationId: string | nul
         timestamp: assistantDisplayTime
       }]);
     } catch (err: any) {
+      console.error("Neural Uplink Error:", {
+        message: err.message,
+        code: err.code,
+        details: err.details,
+        fullError: err
+      });
+      
+      const isAuthError = err.status === 401 || 
+                          err.code === "PGRST301" || 
+                          (typeof err.message === 'string' && err.message.toLowerCase().includes("unauthorized"));
+
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: `[ERROR_UPLINK_FAILED]: ${err.message || 'Unknown network interference.'}`,
+        content: isAuthError
+          ? "[ERROR_AUTH_FAILURE]: Neural session expired or unauthorized. Please re-authenticate your connection."
+          : `[ERROR_UPLINK_FAILED]: ${err.message || err.code || 'Neural pathway fragmented (Unknown Error)'}`,
         timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }]);
     } finally {
