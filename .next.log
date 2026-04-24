@@ -1,5 +1,5 @@
 
-> ai-app@0.1.0 dev
+> Ai copilot@0.1.0 dev
 > next dev
 
 ▲ Next.js 16.2.3 (Turbopack)
@@ -7,7 +7,7 @@
 - Network:       http://192.168.1.11:3000
 - Environments: .env.local
 ✓ Ready in 5.2s
-⚠ Slow filesystem detected. The benchmark took 273ms. If /media/antor/PROJECTS/Ai-app/.next/dev is a network drive, consider moving it to a local folder.
+⚠ Slow filesystem detected. The benchmark took 273ms. If /media/antor/PROJECTS/Ai copilot/.next/dev is a network drive, consider moving it to a local folder.
 See more: https://nextjs.org/docs/app/guides/local-development
 
  GET /app 200 in 7.6s (next.js: 5.6s, application-code: 1997ms)

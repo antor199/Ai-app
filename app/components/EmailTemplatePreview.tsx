@@ -12,7 +12,7 @@ export default function EmailTemplatePreview() {
             <Sparkles className="w-12 h-12 text-white" />
           </div>
           <div className="relative z-10">
-            <h1 className="text-white font-bold text-2xl tracking-[0.2em] font-orbitron">Ai app</h1>
+            <h1 className="text-white font-bold text-2xl tracking-[0.2em] font-orbitron">Ai copilot</h1>
             <p className="text-white/80 text-xs mt-2 tracking-widest uppercase">Neural Uplink Authorization</p>
           </div>
         </div>
@@ -21,7 +21,7 @@ export default function EmailTemplatePreview() {
         <div className="p-10 space-y-8">
           <div className="space-y-4">
             <p className="text-white/90 text-sm leading-relaxed">
-              Init_Login detected. To complete your entry into the <span className="text-primary-glow font-bold">Ai app</span> neural workspace, please enter the following authorization code:
+              Init_Login detected. To complete your entry into the <span className="text-primary-glow font-bold">Ai copilot</span> neural workspace, please enter the following authorization code:
             </p>
           </div>
 
@@ -50,7 +50,7 @@ export default function EmailTemplatePreview() {
 
               <div className="pt-4">
                 <p className="text-[9px] font-orbitron font-black text-white/20 tracking-[0.3em]">
-                  Ai app // GLOBAL_EDGENET // VER_2.4.0
+                  Ai copilot // GLOBAL_EDGENET // VER_2.4.0
                 </p>
               </div>
             </div>

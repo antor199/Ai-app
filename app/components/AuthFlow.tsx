@@ -139,7 +139,7 @@ export default function AuthFlow({ onAuthorized }: { onAuthorized: (user: { name
               <h2 className="font-orbitron font-bold text-2xl text-white tracking-wider">Ai VERIFICATION</h2>
               <p className="text-white/60 text-sm">
                 A verification code has been sent to <br />
-                <span className="text-secondary-glow font-medium">{formData.email || "user@singularity.network"}</span>
+                <span className="text-secondary-glow font-medium">{formData.email || "user@ai-copilot.com"}</span>
               </p>
               {statusMsg && (
                 <div className={`text-sm mt-4 text-center font-orbitron p-3 rounded-lg bg-black/40 border ${statusMsg.includes('failed') || statusMsg.includes('Invalid') ? 'border-red-500/50 text-red-400' : 'border-primary-glow/50 text-primary-glow'}`}>
@@ -214,7 +214,7 @@ export default function AuthFlow({ onAuthorized }: { onAuthorized: (user: { name
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within/input:text-primary-glow transition-colors" />
                     <input
                       type="text"
-                      placeholder="Ai App"
+                      placeholder="Ai copilot"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-primary-glow/50 focus:bg-primary-glow/5 transition-all font-light tracking-wider"
@@ -229,7 +229,7 @@ export default function AuthFlow({ onAuthorized }: { onAuthorized: (user: { name
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/20 group-focus-within/input:text-primary-glow transition-colors" />
                   <input
                     type="email"
-                    placeholder="ai-app@gmail.com"
+                    placeholder="user@gmail.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full bg-black/40 border border-white/10 rounded-xl py-4 pl-12 pr-4 text-white focus:outline-none focus:border-primary-glow/50 focus:bg-primary-glow/5 transition-all font-light tracking-wider"

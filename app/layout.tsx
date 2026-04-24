@@ -14,8 +14,11 @@ const orbitron = Orbitron({
 });
 
 export const metadata: Metadata = {
-  title: "Ai app | AI Workspace",
+  title: "Ai copilot | AI Workspace",
   description: "A production-ready, cinematic AI workspace.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
